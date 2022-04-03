@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace VideoPoker
 {
@@ -6,8 +7,9 @@ namespace VideoPoker
     {
         private string suit;
         private string value;
-        
-        // Likely in need of the sprite for the card face here and being able to set it accordingly
+        public Image cardFace;
+
+        //public CardFace cardFace;
 
         // Constructor for card
         public Card(string suit, string value)
@@ -44,6 +46,12 @@ namespace VideoPoker
         public string toString()
         {
             return suit + value;
+        }
+
+        // Pass card face sprite
+        public void SetCardFace(Sprite cardFace)
+        {
+            this.cardFace.sprite = cardFace;
         }
     }
 }

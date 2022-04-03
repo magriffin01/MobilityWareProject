@@ -5,31 +5,50 @@ namespace VideoPoker
 {
     public class Deck : MonoBehaviour
     {
+        public GameObject cardPrefab;
+        public List<Sprite> CardFaces;
+        public Transform cardsObject;
+        
         private static List<string> suits = new List<string>() {"C", "D", "H", "S"};
         private static List<string> values = new List<string>()
             {"A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"};
 
-        private List<Card> deck;
+        private List<GameObject> deck;
 
         private void Start()
         {
             PlayDeck();
         }
 
-        // Generates a deck of cards by looping through the suits and values and making new cards
-        public List<Card> GenerateDeck()
+        public List<GameObject> GetDeck()
         {
-            List<Card> deck = new List<Card>();
+            return deck;
+        }
+
+        // Generates a deck of cards by looping through the suits and values and making new cards
+        public List<GameObject> GenerateDeck()
+        {
+            List<GameObject> deck = new List<GameObject>();
+            int index = 0;
 
             foreach (string suit in suits)
             {
                 foreach (string value in values)
                 {
-                    Card card = new Card(suit, value);
-                    deck.Add(card);
+                    GameObject newCard = Instantiate(cardPrefab, transform.position, Quaternion.identity);
+                    newCard.GetComponent<Card>().SetSuit(suit);
+                    newCard.GetComponent<Card>().SetValue(value);
+                    newCard.GetComponent<Card>().SetCardFace(CardFaces[index]);
+                    newCard.transform.SetParent(cardsObject);
+                    newCard.transform.localPosition = new Vector3(0, 0, 0);
+                    newCard.transform.localScale = new Vector3(1, 1, 1);
+                    deck.Add(newCard);
+                    index++;
                 }
             }
-
+            
+            Shuffle(deck);
+            
             return deck;
         }
 
@@ -37,11 +56,10 @@ namespace VideoPoker
         public void PlayDeck()
         {
             deck = GenerateDeck();
-            Shuffle(deck);
 
-            foreach (Card card in deck)
+            foreach (GameObject card in deck)
             {
-                Debug.Log(card.toString());
+                Debug.Log(card.GetComponent<Card>().toString());
             }
         }
 

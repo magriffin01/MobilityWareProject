@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace VideoPoker
 {
@@ -8,6 +9,7 @@ namespace VideoPoker
 	/// 
 	public class GameManager : MonoBehaviour
 	{
+
 		//-//////////////////////////////////////////////////////////////////////
 		/// 
 		void Awake()
