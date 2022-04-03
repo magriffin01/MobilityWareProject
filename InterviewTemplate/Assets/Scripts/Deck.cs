@@ -1,29 +1,39 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace VideoPoker
 {
     public class Deck : MonoBehaviour
     {
-        public GameObject cardPrefab;
+        public GameObject CardPrefab;
+        public Transform DeckObject;
         public List<Sprite> CardFaces;
-        public Transform cardsObject;
         
         private static List<string> suits = new List<string>() {"C", "D", "H", "S"};
         private static List<string> values = new List<string>()
             {"A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"};
 
-        private List<GameObject> deck;
+        public List<GameObject> deck;
+        private int cardsInDeck;
 
-        private void Start()
+        private void Awake()
         {
-            PlayDeck();
+            deck = GenerateDeck();
+            Debug.Log(deck[0].GetComponent<Card>().toString());
         }
 
         public List<GameObject> GetDeck()
         {
             return deck;
         }
+        
+        // TODO: TESTING
+        // private void OnEnable()
+        // {
+        //     UIManager.OnDealPress += 
+        // }
 
         // Generates a deck of cards by looping through the suits and values and making new cards
         public List<GameObject> GenerateDeck()
@@ -35,32 +45,45 @@ namespace VideoPoker
             {
                 foreach (string value in values)
                 {
-                    GameObject newCard = Instantiate(cardPrefab, transform.position, Quaternion.identity);
-                    newCard.GetComponent<Card>().SetSuit(suit);
-                    newCard.GetComponent<Card>().SetValue(value);
-                    newCard.GetComponent<Card>().SetCardFace(CardFaces[index]);
-                    newCard.transform.SetParent(cardsObject);
-                    newCard.transform.localPosition = new Vector3(0, 0, 0);
-                    newCard.transform.localScale = new Vector3(1, 1, 1);
-                    deck.Add(newCard);
+                    // Instantiate cardObject and set it's corresponding suit, value, and cardFace. Change it's parent, position, and scale
+                    GameObject cardObject = Instantiate(CardPrefab, transform.position, Quaternion.identity);
+                    Card newCard = cardObject.GetComponent<Card>();
+                    newCard.SetSuit(suit);
+                    newCard.SetValue(value);
+                    newCard.SetCardFace(CardFaces[index]);
+                    cardObject.transform.SetParent(DeckObject);
+                    // cardObject.transform.localPosition = new Vector3(0, 0, 0);
+                    // cardObject.transform.localScale = new Vector3(1, 1, 1);
+                    cardObject.name = newCard.toString();
+                    cardObject.SetActive(false);
+                    deck.Add(cardObject);
                     index++;
+                    cardsInDeck++;
                 }
             }
-            
+            Debug.Log("Cards in deck: " + cardsInDeck);
             Shuffle(deck);
-            
+
             return deck;
         }
 
-        // Tests the card generation
-        public void PlayDeck()
+        // Removes card deck
+        public GameObject PlayTopCard()
         {
-            deck = GenerateDeck();
+            GameObject cardToPlay = deck[0];
 
-            foreach (GameObject card in deck)
-            {
-                Debug.Log(card.GetComponent<Card>().toString());
-            }
+            deck.Remove(cardToPlay);
+            --cardsInDeck;
+            return cardToPlay;
+        }
+
+        // Adds a card to the deck
+        public void AddCard(GameObject card)
+        {
+            card.transform.SetParent(DeckObject);
+            card.SetActive(false);
+            deck.Add(card);
+            ++cardsInDeck;
         }
 
         // Shuffles the deck of cards (randomizes order of list), attributed from https://stackoverflow.com/questions/273313/randomize-a-listt

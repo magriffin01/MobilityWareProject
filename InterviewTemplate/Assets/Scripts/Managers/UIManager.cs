@@ -18,6 +18,12 @@ namespace VideoPoker
 		[SerializeField]
 		private Button betButton = null;
 
+		[SerializeField] 
+		private Button dealButton = null;
+
+		public delegate void DealButtonPressed();
+		public static event DealButtonPressed DealCards;
+
 		//-//////////////////////////////////////////////////////////////////////
 		/// 
 		void Awake()
@@ -29,6 +35,7 @@ namespace VideoPoker
 		void Start()
 		{
 			betButton.onClick.AddListener(OnBetButtonPressed);
+			dealButton.onClick.AddListener(OnDealButtonPressed);
 		}
 
 		//-//////////////////////////////////////////////////////////////////////
@@ -37,6 +44,16 @@ namespace VideoPoker
 		/// 
 		private void OnBetButtonPressed()
 		{
+			Debug.Log("Bet pressed");
+		}
+
+		private void OnDealButtonPressed()
+		{
+			Debug.Log("Deal pressed");
+			if (DealCards != null)
+			{
+				DealCards();
+			}
 		}
 	}
 }

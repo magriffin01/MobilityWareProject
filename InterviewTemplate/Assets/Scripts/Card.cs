@@ -5,11 +5,9 @@ namespace VideoPoker
 {
     public class Card : MonoBehaviour
     {
+        public Image cardFace;
         private string suit;
         private string value;
-        public Image cardFace;
-
-        //public CardFace cardFace;
 
         // Constructor for card
         public Card(string suit, string value)
