@@ -31,13 +31,13 @@ namespace VideoPoker
 		/// 
 		void Update()
 		{
-			if (currentState == stateDraw)
-			{
-				if (scoreManager.CheckForWin())
-				{
-					NewGameState(stateWin);
-				}
-			}
+			// if (currentState == stateDraw)
+			// {
+			// 	if (scoreManager.CheckForWin())
+			// 	{
+			// 		NewGameState(stateWin);
+			// 	}
+			// }
 		}
 
 		public void NewGameState(GameState newState)

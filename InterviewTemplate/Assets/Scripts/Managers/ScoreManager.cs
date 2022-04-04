@@ -17,6 +17,12 @@ namespace VideoPoker
         private List<Card> cardsInHand;
         private string winType;
 
+        private HashSet<string> valuesInHand;
+        private HashSet<string> suitsInHand;
+        private List<int> valuesInHandInt;
+        private Dictionary<string, int> occurrences;
+        
+
         private void Awake()
         {
             balance = StartBalance;
@@ -70,13 +76,9 @@ namespace VideoPoker
         public bool CheckForWin()
         {
             bool isWin = false;
-            cardsInHand = new List<Card>();
             
-            foreach (GameObject card in hand.hand)
-            {
-                cardsInHand.Add(card.GetComponent<Card>());
-            }
-            
+            GetValuesAndSuits();
+
             // Check every win condition
             if (IsRoyalFlush())
             {
@@ -143,15 +145,38 @@ namespace VideoPoker
             return isWin;
         }
 
-        private bool IsRoyalFlush()
+        private void GetValuesAndSuits()
         {
-            HashSet<string> valuesInHand = new HashSet<string>();
-
+            cardsInHand = new List<Card>();
+            
+            foreach (GameObject card in hand.hand)
+            {
+                cardsInHand.Add(card.GetComponent<Card>());
+            }
+            
+            valuesInHand = new HashSet<string>();
+            suitsInHand = new HashSet<string>();
+            valuesInHandInt = new List<int>();
+            occurrences = new Dictionary<string, int>();
+            
             foreach (Card card in cardsInHand)
             {
                 valuesInHand.Add(card.GetValue());
+                suitsInHand.Add(card.GetSuit());
+                valuesInHandInt.Add(Int32.Parse(card.GetValue()));
+                occurrences[card.GetValue()] = 0;
             }
+            
+            foreach (Card card in cardsInHand)
+            {
+                occurrences[card.GetValue()] += 1;
+            }
+            
+            valuesInHandInt.Sort();
+        }
 
+        private bool IsRoyalFlush()
+        {
             if (valuesInHand.Count != 5)
             {
                 return false;
@@ -168,29 +193,18 @@ namespace VideoPoker
 
         private bool IsStraightFlush()
         {
-            List<int> valuesInHand = new List<int>();
-            HashSet<string> suitsInHand = new HashSet<string>();
-
-            foreach (Card card in cardsInHand)
-            {
-                suitsInHand.Add(card.GetSuit());
-                valuesInHand.Add(Int32.Parse(card.GetValue()));
-            }
-
             if (suitsInHand.Count != 1)
             {
                 return false;
             }
-            
-            valuesInHand.Sort();
 
             // Account for ace
-            if (valuesInHand[0] == 1)
+            if (valuesInHandInt[0] == 1)
             {
                 int listIndex = 2;
-                for (int i = 2; i < valuesInHand.Count; ++i)
+                for (int i = 2; i < valuesInHandInt.Count; ++i)
                 {
-                    if (valuesInHand[listIndex] - i != valuesInHand[1])
+                    if (valuesInHandInt[listIndex] - i != valuesInHandInt[1])
                     {
                         return false;
                     }
@@ -198,7 +212,7 @@ namespace VideoPoker
                     ++listIndex;
                 }
 
-                if (valuesInHand[1] == 2 || valuesInHand[valuesInHand.Count - 1] == 13)
+                if (valuesInHandInt[1] == 2 || valuesInHandInt[valuesInHandInt.Count - 1] == 13)
                 {
                     return true;
                 }
@@ -208,9 +222,9 @@ namespace VideoPoker
             else
             {
                 int listIndex = 1;
-                for (int i = 1; i < valuesInHand.Count; ++i)
+                for (int i = 1; i < valuesInHandInt.Count; ++i)
                 {
-                    if (valuesInHand[listIndex] - i != valuesInHand[0])
+                    if (valuesInHandInt[listIndex] - i != valuesInHandInt[0])
                     {
                         return false;
                     }
@@ -224,18 +238,6 @@ namespace VideoPoker
 
         private bool IsFourOfAKind()
         {
-            Dictionary<string, int> occurrences = new Dictionary<string, int>();
-
-            foreach (Card card in cardsInHand)
-            {
-                occurrences[card.GetValue()] = 0;
-            }
-            
-            foreach (Card card in cardsInHand)
-            {
-                occurrences[card.GetValue()] += 1;
-            }
-
             foreach (KeyValuePair<string, int> entry in occurrences)
             {
                 if (entry.Value == 4)
@@ -249,23 +251,9 @@ namespace VideoPoker
 
         private bool IsFullHouse()
         {
-            HashSet<string> valuesInHand = new HashSet<string>();
-            Dictionary<string, int> occurrences = new Dictionary<string, int>();
-
-            foreach (Card card in cardsInHand)
-            {
-                valuesInHand.Add(card.GetValue());
-                occurrences[card.GetValue()] = 0;
-            }
-
             if (valuesInHand.Count != 2)
             {
                 return false;
-            }
-            
-            foreach (Card card in cardsInHand)
-            {
-                occurrences[card.GetValue()] += 1;
             }
             
             foreach (KeyValuePair<string, int> entry in occurrences)
@@ -281,14 +269,7 @@ namespace VideoPoker
 
         private bool IsFlush()
         {
-            HashSet<string> suitsInHand = new HashSet<string>();
-
-            foreach (Card card in cardsInHand)
-            {
-                suitsInHand.Add(card.GetSuit());
-            }
-
-            if (suitsInHand.Count != 1)
+           if (suitsInHand.Count != 1)
             {
                 return false;
             }
@@ -298,22 +279,13 @@ namespace VideoPoker
 
         private bool IsStraight()
         {
-            List<int> valuesInHand = new List<int>();
-
-            foreach (Card card in cardsInHand)
-            {
-                valuesInHand.Add(Int32.Parse(card.GetValue()));
-            }
-
-            valuesInHand.Sort();
-
             // Account for ace
-            if (valuesInHand[0] == 1)
+            if (valuesInHandInt[0] == 1)
             {
                 int listIndex = 2;
-                for (int i = 2; i < valuesInHand.Count; ++i)
+                for (int i = 2; i < valuesInHandInt.Count; ++i)
                 {
-                    if (valuesInHand[listIndex] - i != valuesInHand[1])
+                    if (valuesInHandInt[listIndex] - i != valuesInHandInt[1])
                     {
                         return false;
                     }
@@ -321,7 +293,7 @@ namespace VideoPoker
                     ++listIndex;
                 }
 
-                if (valuesInHand[1] == 2 || valuesInHand[valuesInHand.Count - 1] == 13)
+                if (valuesInHandInt[1] == 2 || valuesInHandInt[valuesInHandInt.Count - 1] == 13)
                 {
                     return true;
                 }
@@ -331,9 +303,9 @@ namespace VideoPoker
             else
             {
                 int listIndex = 1;
-                for (int i = 1; i < valuesInHand.Count; ++i)
+                for (int i = 1; i < valuesInHandInt.Count; ++i)
                 {
-                    if (valuesInHand[listIndex] - i != valuesInHand[0])
+                    if (valuesInHandInt[listIndex] - i != valuesInHandInt[0])
                     {
                         return false;
                     }
@@ -347,18 +319,6 @@ namespace VideoPoker
 
         private bool IsThreeOfAKind()
         {
-            Dictionary<string, int> occurrences = new Dictionary<string, int>();
-            
-            foreach (Card card in cardsInHand)
-            {
-                occurrences[card.GetValue()] = 0;
-            }
-
-            foreach (Card card in cardsInHand)
-            {
-                occurrences[card.GetValue()]++;
-            }
-
             foreach (KeyValuePair<string, int> entry in occurrences)
             {
                 if (entry.Value == 3)
@@ -372,23 +332,9 @@ namespace VideoPoker
 
         private bool IsTwoPair()
         {
-            HashSet<string> valuesInHand = new HashSet<string>();
-            Dictionary<string, int> occurrences = new Dictionary<string, int>();
-
-            foreach (Card card in cardsInHand)
-            {
-                valuesInHand.Add(card.GetValue());
-                occurrences[card.GetValue()] = 0;
-            }
-
             if (valuesInHand.Count != 3)
             {
                 return false;
-            }
-            
-            foreach (Card card in cardsInHand)
-            {
-                occurrences[card.GetValue()] += 1;
             }
 
             int numPairs = 0;
@@ -406,20 +352,6 @@ namespace VideoPoker
 
         private bool IsJacksOrBetter()
         {
-            HashSet<string> valuesInHand = new HashSet<string>();
-            Dictionary<string, int> occurrences = new Dictionary<string, int>();
-
-            foreach (Card card in cardsInHand)
-            {
-                valuesInHand.Add(card.GetValue());
-                occurrences[card.GetValue()] = 0;
-            }
-            
-            foreach (Card card in cardsInHand)
-            {
-                occurrences[card.GetValue()] += 1;
-            }
-            
             foreach (KeyValuePair<string, int> entry in occurrences)
             {
                 if (entry.Value == 2 && (entry.Key == "11" || entry.Key == "12" || entry.Key == "13" || entry.Key == "1"))

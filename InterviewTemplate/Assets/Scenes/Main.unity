@@ -1992,6 +1992,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff8e2f2296db75949b5d66d6cbed24c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  scoreManager: {fileID: 590131144}
+  gameManager: {fileID: 16242224}
   deck: {fileID: 1946926603}
   hand: {fileID: 945153162}
 --- !u!4 &1499264972

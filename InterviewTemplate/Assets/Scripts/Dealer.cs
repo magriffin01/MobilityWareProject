@@ -5,6 +5,9 @@ namespace VideoPoker
 {
     public class Dealer : MonoBehaviour
     {
+        public ScoreManager scoreManager;
+        public GameManager gameManager;
+        
         public Deck deck;
         public Hand hand;
 
@@ -60,6 +63,12 @@ namespace VideoPoker
                 deck.AddCard(card);
                 hand.ReplaceCard(deck.PlayTopCard(), card);
             }
+
+            if (scoreManager.CheckForWin())
+            {
+                gameManager.NewGameState(gameManager.stateWin);
+            }
+            
         }
     }
 }
