@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace VideoPoker
 {
@@ -10,54 +8,48 @@ namespace VideoPoker
 	/// 
 	public class GameManager : MonoBehaviour
 	{
-		public Deck deck;
-		public Hand hand;
+		public ScoreManager scoreManager;
+		
+		[HideInInspector] public StateDeal stateDeal;
 
+		[HideInInspector] public StateDraw stateDraw;
+
+		[HideInInspector] public StateWin stateWin;
+
+		private GameState currentState;
+		
 		//-//////////////////////////////////////////////////////////////////////
 		/// 
 		void Awake()
 		{
+			stateDeal = new StateDeal(this);
+			stateDraw = new StateDraw(this);
+			stateWin = new StateWin(this);
 		}
 
-		//-//////////////////////////////////////////////////////////////////////
-		/// 
-		void Start()
-		{
-			
-		}
-		
 		//-//////////////////////////////////////////////////////////////////////
 		/// 
 		void Update()
 		{
-		}
-
-		private void OnEnable()
-		{
-			UIManager.DealCards += Deal;
-		}
-
-		private void OnDisable()
-		{
-			UIManager.DealCards -= Deal;
-		}
-
-		private void Deal()
-		{
-			if (hand.isFull())
+			if (currentState == stateDraw)
 			{
-				foreach (GameObject card in hand.hand)
+				if (scoreManager.CheckForWin())
 				{
-					deck.AddCard(card);
+					NewGameState(stateWin);
 				}
-				hand.ResetHand();
-			}
-			for (int i = 0; i < 5; ++i)
-			{
-				GameObject card = deck.PlayTopCard();
-				Debug.Log(card.GetComponent<Card>().toString());
-				hand.AddCard(card);
 			}
 		}
+
+		public void NewGameState(GameState newState)
+		{
+			if (currentState != null)
+			{
+				currentState.OnStateExit();
+			}
+
+			currentState = newState;
+			currentState.OnStateEntered();
+		}
+		
 	}
 }

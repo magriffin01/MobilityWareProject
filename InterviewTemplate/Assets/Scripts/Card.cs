@@ -6,8 +6,12 @@ namespace VideoPoker
     public class Card : MonoBehaviour
     {
         public Image cardFace;
+        public Button CardButton;
+        public Text HoldText;
+        
         private string suit;
         private string value;
+        private bool isHolding = false;
 
         // Constructor for card
         public Card(string suit, string value)
@@ -50,6 +54,17 @@ namespace VideoPoker
         public void SetCardFace(Sprite cardFace)
         {
             this.cardFace.sprite = cardFace;
+        }
+
+        public void SetHoldText()
+        {
+            isHolding = !isHolding;
+            HoldText.gameObject.SetActive(isHolding);
+        }
+
+        public bool IsHolding()
+        {
+            return isHolding;
         }
     }
 }

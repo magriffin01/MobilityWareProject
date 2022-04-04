@@ -31,10 +31,11 @@ namespace VideoPoker
             }
             else
             {
-                Debug.Log("Attempting to deal cards to a full hand!");
+                Debug.Log("Attempting to add cards to a full hand!");
             }
         }
 
+        // Removes cards from the hand
         public void ResetHand()
         {
             hand.Clear();
@@ -44,6 +45,7 @@ namespace VideoPoker
             }
         }
 
+        // Returns if the hand is full or not
         public bool isFull()
         {
             return hand.Count == 5;

@@ -91,7 +91,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 6496333874514267475}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7835868030846163519}
+        m_TargetAssemblyTypeName: VideoPoker.Card, Assembly-CSharp
+        m_MethodName: SetHoldText
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &7835868030846163519
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -105,6 +117,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cardFace: {fileID: 6496333874514267475}
+  CardButton: {fileID: 4677759296469084339}
+  HoldText: {fileID: 4677759297069796227}
 --- !u!114 &6496333874514267475
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -193,7 +207,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_Color: {r: 1, g: 0, b: 0.6831584, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -203,7 +217,7 @@ MonoBehaviour:
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
     m_FontSize: 14
-    m_FontStyle: 0
+    m_FontStyle: 3
     m_BestFit: 1
     m_MinSize: 10
     m_MaxSize: 40

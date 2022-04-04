@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace VideoPoker
 {
@@ -13,7 +11,7 @@ namespace VideoPoker
         
         private static List<string> suits = new List<string>() {"C", "D", "H", "S"};
         private static List<string> values = new List<string>()
-            {"A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"};
+            {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"};
 
         public List<GameObject> deck;
         private int cardsInDeck;
@@ -21,19 +19,7 @@ namespace VideoPoker
         private void Awake()
         {
             deck = GenerateDeck();
-            Debug.Log(deck[0].GetComponent<Card>().toString());
         }
-
-        public List<GameObject> GetDeck()
-        {
-            return deck;
-        }
-        
-        // TODO: TESTING
-        // private void OnEnable()
-        // {
-        //     UIManager.OnDealPress += 
-        // }
 
         // Generates a deck of cards by looping through the suits and values and making new cards
         public List<GameObject> GenerateDeck()
@@ -52,8 +38,6 @@ namespace VideoPoker
                     newCard.SetValue(value);
                     newCard.SetCardFace(CardFaces[index]);
                     cardObject.transform.SetParent(DeckObject);
-                    // cardObject.transform.localPosition = new Vector3(0, 0, 0);
-                    // cardObject.transform.localScale = new Vector3(1, 1, 1);
                     cardObject.name = newCard.toString();
                     cardObject.SetActive(false);
                     deck.Add(cardObject);
@@ -82,8 +66,24 @@ namespace VideoPoker
         {
             card.transform.SetParent(DeckObject);
             card.SetActive(false);
+
+            if (card.GetComponent<Card>().IsHolding())
+            {
+                card.GetComponent<Card>().SetHoldText();
+            }
+            
             deck.Add(card);
             ++cardsInDeck;
+        }
+
+        private void OnEnable()
+        {
+            StateDeal.BeginDealState += Reshuffle;
+        }
+
+        private void OnDisable()
+        {
+            StateDeal.BeginDealState -= Reshuffle;
         }
 
         // Shuffles the deck of cards (randomizes order of list), attributed from https://stackoverflow.com/questions/273313/randomize-a-listt
@@ -99,6 +99,11 @@ namespace VideoPoker
                 list[k] = list[n];
                 list[n] = temp;
             }
+        }
+
+        private void Reshuffle()
+        {
+            Shuffle(deck);
         }
     }
 }
