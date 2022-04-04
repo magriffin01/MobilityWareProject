@@ -10,7 +10,6 @@ namespace VideoPoker
         }
         
         public virtual void OnStateEntered(){}
-        public virtual void OnStateExit(){}
     }
 }
 

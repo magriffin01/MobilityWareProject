@@ -13,6 +13,7 @@ namespace VideoPoker
         
         private int balance;
         private int winningBalance;
+        private int winningMultiplier;
         private int currentBet;
         private List<Card> cardsInHand;
         private string winType;
@@ -82,64 +83,65 @@ namespace VideoPoker
             // Check every win condition
             if (IsRoyalFlush())
             {
-                winningBalance = currentBet * 800;
+                winningMultiplier = 800;
                 winType = "Royal Flush!";
                 isWin = true;
             }
             else if (IsStraightFlush())
             {
-                winningBalance = currentBet * 50;
+                winningMultiplier = 50;
                 winType = "Straight Flush!";
                 isWin = true;
             }
             else if (IsFourOfAKind())
             {
-                winningBalance = currentBet * 25;
+                winningMultiplier = 25;
                 winType = "Four of a Kind!";
                 isWin = true;
             }
             else if (IsFullHouse())
             {
-                winningBalance = currentBet * 9;
+                winningMultiplier = 9;
                 winType = "Full House!";
                 isWin = true;
             }
             else if (IsFlush())
             {
-                winningBalance = currentBet * 6;
+                winningMultiplier = 6;
                 winType = "Flush!";
                 isWin = true;
             }
             else if (IsStraight())
             {
-                winningBalance = currentBet * 4;
+                winningMultiplier = 4;
                 winType = "Straight!";
                 isWin = true;
             }
             else if (IsThreeOfAKind())
             {
-                winningBalance = currentBet * 3;
+                winningMultiplier = 3;
                 winType = "Three of a Kind!";
                 isWin = true;
             }
             else if (IsTwoPair())
             {
-                winningBalance = currentBet * 2;
+                winningMultiplier = 2;
                 winType = "Two Pair!";
                 isWin = true;
             }
             else if (IsJacksOrBetter())
             {
-                winningBalance = currentBet * 1;
+                winningMultiplier = 1;
                 winType = "Jacks or Better!";
                 isWin = true;
             }
             else
             {
-                winningBalance = 0;
+                winningMultiplier = 0;
                 winType = "";
             }
 
+            winningBalance = currentBet * winningMultiplier;
             balance += winningBalance;
 
             return isWin;
